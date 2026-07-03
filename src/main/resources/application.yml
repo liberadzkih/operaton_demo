@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: operaton_demo
+  datasource:
+    url: jdbc:postgresql://localhost:5432/camunda
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+server:
+  port: 8080
+
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+      password: demo
+      first-name: Demo
+      last-name: User
+    filter:
+      create: All tasks
+    authorization:
+      enabled: true
+    database:
+      schema-update: true
+    # Automatically deploy all BPMN files found on the classpath
+    deployment-resource-pattern: classpath*:**/*.bpmn20.xml
+
+logging:
+  level:
+    com.devapo.operaton_demo: DEBUG
+    org.camunda.bpm: INFO

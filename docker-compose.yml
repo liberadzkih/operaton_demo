@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: camunda-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: camunda
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d camunda"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  camunda:
+    image: camunda/camunda-bpm-platform:7.20.0
+    container_name: camunda-bpm
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: jdbc:postgresql://postgres:5432/camunda
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      WAIT_FOR: postgres:5432
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/camunda/app/welcome/default/ || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+volumes:
+  postgres_data:
