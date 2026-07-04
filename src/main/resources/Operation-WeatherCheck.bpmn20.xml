@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  id="Definitions_WeatherCheck"
+                  targetNamespace="http://camunda.org/schema/1.0/bpmn">
+  <bpmn:process id="Operation-WeatherCheck" name="Weather Check Advisory" isExecutable="true" camunda:historyTimeToLive="P30D">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_Start_Fetch</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather"
+                      camunda:delegateExpression="${fetchWeatherDelegate}">
+      <bpmn:incoming>Flow_Start_Fetch</bpmn:incoming>
+      <bpmn:outgoing>Flow_Fetch_Gateway</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_Cold" name="Freezing? (&lt; 5&#176;C)">
+      <bpmn:incoming>Flow_Fetch_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Cold</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Warm</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_FrostAlert" name="Send Frost Warning"
+                      camunda:delegateExpression="${sendNotificationDelegate}">
+      <bpmn:incoming>Flow_Cold</bpmn:incoming>
+      <bpmn:outgoing>Flow_Cold_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_Pleasant" name="Log Pleasant Weather"
+                      camunda:delegateExpression="${processDataDelegate}">
+      <bpmn:incoming>Flow_Warm</bpmn:incoming>
+      <bpmn:outgoing>Flow_Warm_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_Cold" name="Frost Alerted">
+      <bpmn:incoming>Flow_Cold_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_Warm" name="All Good">
+      <bpmn:incoming>Flow_Warm_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Start_Fetch" sourceRef="StartEvent_1" targetRef="Task_FetchWeather" />
+    <bpmn:sequenceFlow id="Flow_Fetch_Gateway" sourceRef="Task_FetchWeather" targetRef="Gateway_Cold" />
+    <bpmn:sequenceFlow id="Flow_Cold" name="cold" sourceRef="Gateway_Cold" targetRef="Task_FrostAlert">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${temperature &lt; 5}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Warm" name="pleasant" sourceRef="Gateway_Cold" targetRef="Task_Pleasant">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
+                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${temperature >= 5}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Cold_End" sourceRef="Task_FrostAlert" targetRef="EndEvent_Cold" />
+    <bpmn:sequenceFlow id="Flow_Warm_End" sourceRef="Task_Pleasant" targetRef="EndEvent_Warm" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Operation-WeatherCheck">
+      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="225" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_FetchWeather_di" bpmnElement="Task_FetchWeather">
+        <dc:Bounds x="240" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Cold_di" bpmnElement="Gateway_Cold" isMarkerVisible="true">
+        <dc:Bounds x="415" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="400" y="145" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_FrostAlert_di" bpmnElement="Task_FrostAlert">
+        <dc:Bounds x="530" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Pleasant_di" bpmnElement="Task_Pleasant">
+        <dc:Bounds x="530" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Cold_di" bpmnElement="EndEvent_Cold">
+        <dc:Bounds x="692" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="682" y="145" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Warm_di" bpmnElement="EndEvent_Warm">
+        <dc:Bounds x="692" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="688" y="325" width="45" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_Fetch_di" bpmnElement="Flow_Start_Fetch">
+        <di:waypoint x="188" y="200" />
+        <di:waypoint x="240" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Fetch_Gateway_di" bpmnElement="Flow_Fetch_Gateway">
+        <di:waypoint x="340" y="200" />
+        <di:waypoint x="415" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Cold_di" bpmnElement="Flow_Cold">
+        <di:waypoint x="440" y="175" />
+        <di:waypoint x="440" y="120" />
+        <di:waypoint x="530" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="450" y="135" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Warm_di" bpmnElement="Flow_Warm">
+        <di:waypoint x="440" y="225" />
+        <di:waypoint x="440" y="300" />
+        <di:waypoint x="530" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="446" y="306" width="42" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Cold_End_di" bpmnElement="Flow_Cold_End">
+        <di:waypoint x="630" y="120" />
+        <di:waypoint x="692" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Warm_End_di" bpmnElement="Flow_Warm_End">
+        <di:waypoint x="630" y="300" />
+        <di:waypoint x="692" y="300" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
