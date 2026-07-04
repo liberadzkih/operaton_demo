@@ -55,6 +55,7 @@ Testy używają bazy H2 w pamięci, więc nie wymagają działającego PostgreSQ
 | `Operation-WithUserTasks` | `Operation-WithUserTasks.bpmn20.xml` | Start → Validate → User Task (Approve) → bramka `approved?` → Process / Reject → End |
 | `Operation-CurrencyExchange` | `Operation-CurrencyExchange.bpmn20.xml` | Start → **Fetch Exchange Rate** (Frankfurter API) → User Task (Review) → bramka `approved?` → Confirm / Reject → End |
 | `Operation-WeatherCheck` | `Operation-WeatherCheck.bpmn20.xml` | Start → **Fetch Weather** (Open-Meteo API) → bramka `< 5°C?` → Frost Warning / Log Pleasant Weather → End (automatyczny) |
+| `Operation-WeatherNotifier` | `Operation-WeatherNotifier.bpmn20.xml` | **Timer Start `R/PT10M`** (co 10 min) → Fetch Weather (Open-Meteo) → **Send Weather E-mail** (SMTP) → End |
 
 ### Integracje z zewnętrznymi API
 
@@ -62,6 +63,41 @@ Oba dodatkowe procesy integrują się z darmowymi, publicznymi API (bez klucza):
 
 - **[Frankfurter](https://www.frankfurter.app/)** (`api.frankfurter.dev`) — kursy walut Europejskiego Banku Centralnego.
 - **[Open-Meteo](https://open-meteo.com/)** (`api.open-meteo.com`) — bieżąca temperatura dla podanych współrzędnych.
+
+### Cykliczne powiadomienia e-mail (`Operation-WeatherNotifier`)
+
+Proces uruchamia się **automatycznie co 10 minut** dzięki *timer start event* z
+cyklem ISO-8601 `R/PT10M` (obsługiwany przez job executor, który jest włączony).
+Za każdym razem pobiera pogodę i wysyła e-mail przez SMTP.
+
+**Konfiguracja SMTP oraz adres odbiorcy ustawiane są na poziomie procesu (w BPMN),
+przed deployem** — poprzez `camunda:field` (field injection) na zadaniu
+*Send Weather E-mail*. W pliku `Operation-WeatherNotifier.bpmn20.xml` znajdują się
+placeholdery, które należy podmienić przed wdrożeniem:
+
+| Pole | Placeholder | Przykład |
+|---|---|---|
+| `smtpHost` | `__SMTP_HOST__` | `smtp.gmail.com` |
+| `smtpPort` | `__SMTP_PORT__` | `587` |
+| `smtpUsername` | `__SMTP_USERNAME__` | `myapp@gmail.com` |
+| `smtpPassword` | `__SMTP_PASSWORD__` | `app-password` |
+| `fromAddress` | `__FROM_ADDRESS__` | `myapp@gmail.com` |
+| `recipientEmail` | `__RECIPIENT_EMAIL__` | `odbiorca@example.com` |
+
+Przykład (fragment BPMN):
+
+```xml
+<camunda:field name="smtpHost">
+  <camunda:string>__SMTP_HOST__</camunda:string>
+</camunda:field>
+<camunda:field name="recipientEmail">
+  <camunda:string>__RECIPIENT_EMAIL__</camunda:string>
+</camunda:field>
+```
+
+> Zmiana częstotliwości: podmień `R/PT10M` w `timeCycle` (np. `R/PT1H` = co godzinę).
+> Dopóki placeholdery nie zostaną wypełnione poprawnymi danymi SMTP, delegat
+> zgłosi `BpmnError("EMAIL_ERROR")` przy próbie wysyłki.
 
 ## Delegaci
 
@@ -73,6 +109,7 @@ Oba dodatkowe procesy integrują się z darmowymi, publicznymi API (bez klucza):
 | `rejectDelegate` | `RejectDelegate` | Powiadomienie o odrzuceniu, ustawia `rejectionNotificationSent` |
 | `fetchExchangeRateDelegate` | `FetchExchangeRateDelegate` | Pobiera kurs z Frankfurter API; czyta `amount`/`fromCurrency`/`toCurrency`, ustawia `exchangeRate`, `convertedAmount`, `rateDate` |
 | `fetchWeatherDelegate` | `FetchWeatherDelegate` | Pobiera pogodę z Open-Meteo; czyta `latitude`/`longitude` (domyślnie Warszawa), ustawia `temperature`, `weatherFetchedAt` |
+| _(bez beana — `camunda:class`)_ | `SendEmailDelegate` | Wysyła maila przez SMTP; cała konfiguracja (SMTP + odbiorca) wstrzykiwana przez `camunda:field` z BPMN, ustawia `emailSent` |
 
 ## REST API
 
@@ -159,7 +196,8 @@ src/main/java/com/devapo/operaton_demo
 │   ├── SendNotificationDelegate.java
 │   ├── RejectDelegate.java
 │   ├── FetchExchangeRateDelegate.java
-│   └── FetchWeatherDelegate.java
+│   ├── FetchWeatherDelegate.java
+│   └── SendEmailDelegate.java
 └── config/CamundaConfig.java
 
 src/main/resources/
@@ -167,7 +205,8 @@ src/main/resources/
 ├── Operation-Automatic.bpmn20.xml
 ├── Operation-WithUserTasks.bpmn20.xml
 ├── Operation-CurrencyExchange.bpmn20.xml
-└── Operation-WeatherCheck.bpmn20.xml
+├── Operation-WeatherCheck.bpmn20.xml
+└── Operation-WeatherNotifier.bpmn20.xml
 
 docker-compose.yml
 pom.xml

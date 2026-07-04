@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  id="Definitions_WeatherNotifier"
+                  targetNamespace="http://camunda.org/schema/1.0/bpmn">
+  <bpmn:process id="Operation-WeatherNotifier" name="Cyclic Weather E-mail Notifier" isExecutable="true" camunda:historyTimeToLive="P30D">
+    <!-- Fires every 10 minutes (ISO-8601 repeating interval) and starts a new instance. -->
+    <bpmn:startEvent id="StartTimer" name="Every 10 minutes">
+      <bpmn:outgoing>Flow_Start_Fetch</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerDef_1">
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">R/PT10M</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather"
+                      camunda:delegateExpression="${fetchWeatherDelegate}">
+      <bpmn:incoming>Flow_Start_Fetch</bpmn:incoming>
+      <bpmn:outgoing>Flow_Fetch_Email</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_SendEmail" name="Send Weather E-mail"
+                      camunda:class="com.devapo.operaton_demo.delegate.SendEmailDelegate">
+      <bpmn:extensionElements>
+        <!-- ==== SET THESE PLACEHOLDERS BEFORE DEPLOY ==== -->
+        <camunda:field name="smtpHost">
+          <camunda:string>__SMTP_HOST__</camunda:string>
+        </camunda:field>
+        <camunda:field name="smtpPort">
+          <camunda:string>__SMTP_PORT__</camunda:string>
+        </camunda:field>
+        <camunda:field name="smtpUsername">
+          <camunda:string>__SMTP_USERNAME__</camunda:string>
+        </camunda:field>
+        <camunda:field name="smtpPassword">
+          <camunda:string>__SMTP_PASSWORD__</camunda:string>
+        </camunda:field>
+        <camunda:field name="fromAddress">
+          <camunda:string>__FROM_ADDRESS__</camunda:string>
+        </camunda:field>
+        <camunda:field name="recipientEmail">
+          <camunda:string>__RECIPIENT_EMAIL__</camunda:string>
+        </camunda:field>
+        <!-- ============================================== -->
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Fetch_Email</bpmn:incoming>
+      <bpmn:outgoing>Flow_Email_End</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_1" name="Notified">
+      <bpmn:incoming>Flow_Email_End</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_Start_Fetch" sourceRef="StartTimer" targetRef="Task_FetchWeather" />
+    <bpmn:sequenceFlow id="Flow_Fetch_Email" sourceRef="Task_FetchWeather" targetRef="Task_SendEmail" />
+    <bpmn:sequenceFlow id="Flow_Email_End" sourceRef="Task_SendEmail" targetRef="EndEvent_1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Operation-WeatherNotifier">
+      <bpmndi:BPMNShape id="StartTimer_di" bpmnElement="StartTimer">
+        <dc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="130" y="145" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_FetchWeather_di" bpmnElement="Task_FetchWeather">
+        <dc:Bounds x="250" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendEmail_di" bpmnElement="Task_SendEmail">
+        <dc:Bounds x="410" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="572" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="569" y="145" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_Fetch_di" bpmnElement="Flow_Start_Fetch">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="250" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Fetch_Email_di" bpmnElement="Flow_Fetch_Email">
+        <di:waypoint x="350" y="120" />
+        <di:waypoint x="410" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Email_End_di" bpmnElement="Flow_Email_End">
+        <di:waypoint x="510" y="120" />
+        <di:waypoint x="572" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

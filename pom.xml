@@ -56,6 +56,12 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
+		<!-- Mail (JavaMailSender + jakarta.mail) for the SMTP notification delegate -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<!-- PostgreSQL driver (runtime) -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
