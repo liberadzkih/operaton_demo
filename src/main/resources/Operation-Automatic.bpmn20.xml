@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  xmlns:operaton="http://operaton.org/schema/1.0/bpmn"
-                  id="Definitions_Automatic"
-                  targetNamespace="http://operaton.org/schema/1.0/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:operaton="http://operaton.org/schema/1.0/bpmn" id="Definitions_Automatic" targetNamespace="http://operaton.org/schema/1.0/bpmn" exporter="Operaton Modeler" exporterVersion="1.2.0-dev">
   <bpmn:process id="Operation-Automatic" name="Operation Automatic" isExecutable="true" operaton:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_Start_Validate</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Task_Validate" name="Validate Data"
-                      operaton:delegateExpression="${validateDataDelegate}">
+    <bpmn:serviceTask id="Task_Validate" name="Validate Data" operaton:delegateExpression="${validateDataDelegate}">
       <bpmn:incoming>Flow_Start_Validate</bpmn:incoming>
       <bpmn:outgoing>Flow_Validate_Process</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Process" name="Process Data"
-                      operaton:delegateExpression="${processDataDelegate}">
+    <bpmn:serviceTask id="Task_Process" name="Process Data" operaton:delegateExpression="${processDataDelegate}">
       <bpmn:incoming>Flow_Validate_Process</bpmn:incoming>
       <bpmn:outgoing>Flow_Process_Notify</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Notify" name="Send Notification"
-                      operaton:delegateExpression="${sendNotificationDelegate}">
+    <bpmn:serviceTask id="Task_Notify" name="Send Notification" operaton:delegateExpression="${sendNotificationDelegate}">
       <bpmn:incoming>Flow_Process_Notify</bpmn:incoming>
       <bpmn:outgoing>Flow_Notify_End</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -51,9 +42,9 @@
         <dc:Bounds x="560" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
-        <dc:Bounds x="722" y="102" width="36" height="36" />
+        <dc:Bounds x="732" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="731" y="145" width="20" height="14" />
+          <dc:Bounds x="741" y="145" width="20" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_Start_Validate_di" bpmnElement="Flow_Start_Validate">
@@ -70,7 +61,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Notify_End_di" bpmnElement="Flow_Notify_End">
         <di:waypoint x="660" y="120" />
-        <di:waypoint x="722" y="120" />
+        <di:waypoint x="732" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
