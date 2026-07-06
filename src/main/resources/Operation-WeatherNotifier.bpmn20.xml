@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_WeatherNotifier" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
-  <bpmn:process id="Operation-WeatherNotifier" name="Cyclic Weather E-mail Notifier" isExecutable="true" camunda:historyTimeToLive="P30D">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:operaton="http://operaton.org/schema/1.0/bpmn" id="Definitions_WeatherNotifier" targetNamespace="http://operaton.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
+  <bpmn:process id="Operation-WeatherNotifier" name="Cyclic Weather E-mail Notifier" isExecutable="true" operaton:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartTimer" name="Every 10 minutes">
       <bpmn:outgoing>Flow_Start_Fetch</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerDef_1">
         <bpmn:timeCycle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn:tFormalExpression">R/PT10M</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather" camunda:delegateExpression="${fetchWeatherDelegate}">
+    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather" operaton:delegateExpression="${fetchWeatherDelegate}">
       <bpmn:incoming>Flow_Start_Fetch</bpmn:incoming>
       <bpmn:outgoing>Flow_Fetch_Email</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_SendEmail" name="Send Weather E-mail" camunda:class="com.devapo.operaton_demo.delegate.SendEmailDelegate">
+    <bpmn:serviceTask id="Task_SendEmail" name="Send Weather E-mail" operaton:class="com.devapo.operaton_demo.delegate.SendEmailDelegate">
       <bpmn:extensionElements>
-        <camunda:field name="smtpHost">
-          <camunda:string>smtp.gmail.com</camunda:string>
-        </camunda:field>
-        <camunda:field name="smtpPort">
-          <camunda:string>587</camunda:string>
-        </camunda:field>
-        <camunda:field name="smtpUsername">
-          <camunda:string>offer.texter@gmail.com</camunda:string>
-        </camunda:field>
-        <camunda:field name="smtpPassword">
-          <camunda:string>placeholder</camunda:string>
-        </camunda:field>
-        <camunda:field name="fromAddress">
-          <camunda:string>offer.texter@gmail.com</camunda:string>
-        </camunda:field>
-        <camunda:field name="recipientEmail">
-          <camunda:string>hubert.liberadzki@devapo.pl</camunda:string>
-        </camunda:field>
+        <operaton:field name="smtpHost">
+          <operaton:string>smtp.gmail.com</operaton:string>
+        </operaton:field>
+        <operaton:field name="smtpPort">
+          <operaton:string>587</operaton:string>
+        </operaton:field>
+        <operaton:field name="smtpUsername">
+          <operaton:string>offer.texter@gmail.com</operaton:string>
+        </operaton:field>
+        <operaton:field name="smtpPassword">
+          <operaton:string>placeholder</operaton:string>
+        </operaton:field>
+        <operaton:field name="fromAddress">
+          <operaton:string>offer.texter@gmail.com</operaton:string>
+        </operaton:field>
+        <operaton:field name="recipientEmail">
+          <operaton:string>hubert.liberadzki@devapo.pl</operaton:string>
+        </operaton:field>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_Fetch_Email</bpmn:incoming>
       <bpmn:outgoing>Flow_Email_End</bpmn:outgoing>

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:camunda-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
+    url: jdbc:h2:mem:operaton-test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false
     username: sa
     password: sa
     driver-class-name: org.h2.Driver
@@ -9,12 +9,11 @@ spring:
       ddl-auto: none
     open-in-view: false
 
-camunda:
-  bpm:
-    admin-user:
-      id: demo
-      password: demo
-    authorization:
-      enabled: true
-    database:
-      schema-update: true
+operaton.bpm:
+  admin-user:
+    id: demo
+    password: demo
+  authorization:
+    enabled: true
+  database:
+    schema-update: true

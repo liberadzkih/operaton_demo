@@ -2,10 +2,10 @@ package com.devapo.operaton_demo.delegate;
 
 import java.util.Properties;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.Expression;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.operaton.bpm.engine.delegate.BpmnError;
+import org.operaton.bpm.engine.delegate.DelegateExecution;
+import org.operaton.bpm.engine.delegate.Expression;
+import org.operaton.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,8 +14,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 /**
  * Sends an e-mail notification over SMTP.
  *
- * <p>This delegate is intentionally wired via {@code camunda:class} (not a
- * Spring bean) so that Camunda instantiates a fresh instance per execution and
+ * <p>This delegate is intentionally wired via {@code operaton:class} (not a
+ * Spring bean) so that Operaton instantiates a fresh instance per execution and
  * the injected fields are thread-safe. All configuration — the full SMTP setup
  * and the target recipient — is provided through BPMN field injection, i.e. it
  * is set at the process level before deployment (see the placeholders in
@@ -29,7 +29,7 @@ public class SendEmailDelegate implements JavaDelegate {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SendEmailDelegate.class);
 
-    // Injected via camunda:field in the BPMN (placeholders set before deploy).
+    // Injected via operaton:field in the BPMN (placeholders set before deploy).
     private Expression smtpHost;
     private Expression smtpPort;
     private Expression smtpUsername;
@@ -108,7 +108,7 @@ public class SendEmailDelegate implements JavaDelegate {
         }
     }
 
-    // Setters required for Camunda field injection.
+    // Setters required for Operaton field injection.
 
     public void setSmtpHost(Expression smtpHost) {
         this.smtpHost = smtpHost;

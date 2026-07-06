@@ -1,19 +1,23 @@
 # operaton_demo
 
-Demo aplikacji **Spring Boot + Camunda 7 (7.20.0)** prezentująca procesy BPMN
+Demo aplikacji **Spring Boot + Operaton** prezentująca procesy BPMN
 uruchamiane w pełni automatycznie oraz z zadaniami użytkownika (user tasks),
 wystawione przez proste REST API.
+
+> Projekt powstał jako demo Camundy 7, a następnie został zmigrowany na
+> [Operaton](https://operaton.org) (m.in. z użyciem recipe OpenRewrite
+> `migrate-camunda-recipe`).
 
 ## Wymagania
 
 - Java 17
 - Maven (dołączony wrapper `mvnw`)
-- Docker (opcjonalnie — dla PostgreSQL / standalone Camunda)
+- Docker (opcjonalnie — dla PostgreSQL / standalone Operaton)
 
 ## Stos technologiczny
 
 - Spring Boot 3.1.x
-- Camunda BPM Spring Boot Starter 7.20.0 (webapp + REST)
+- Operaton BPM Spring Boot Starter 1.0.3 (webapp + REST)
 - PostgreSQL (runtime), H2 (testy)
 - Spring Web, Spring Data JPA, SLF4J
 
@@ -32,11 +36,11 @@ docker-compose up -d postgres
 ```
 
 - Aplikacja: http://localhost:8080
-- Camunda Cockpit: http://localhost:8080/camunda (login: `demo` / `demo`)
+- Operaton Cockpit: http://localhost:8080/operaton (login: `demo` / `demo`)
 - REST API: `http://localhost:8080/api/process/...`
 
 > Uwaga: `docker-compose.yml` uruchamia również **osobny** oficjalny obraz
-> Camunda 7.20 na porcie 8080. Nie uruchamiaj go równocześnie z
+> Operaton (1.0.3) na porcie 8080. Nie uruchamiaj go równocześnie z
 > `mvnw spring-boot:run`, bo obie usługi konkurują o port 8080.
 
 ## Build i testy
@@ -71,7 +75,7 @@ cyklem ISO-8601 `R/PT10M` (obsługiwany przez job executor, który jest włączo
 Za każdym razem pobiera pogodę i wysyła e-mail przez SMTP.
 
 **Konfiguracja SMTP oraz adres odbiorcy ustawiane są na poziomie procesu (w BPMN),
-przed deployem** — poprzez `camunda:field` (field injection) na zadaniu
+przed deployem** — poprzez `operaton:field` (field injection) na zadaniu
 *Send Weather E-mail*. W pliku `Operation-WeatherNotifier.bpmn20.xml` znajdują się
 placeholdery, które należy podmienić przed wdrożeniem:
 
@@ -87,12 +91,12 @@ placeholdery, które należy podmienić przed wdrożeniem:
 Przykład (fragment BPMN):
 
 ```xml
-<camunda:field name="smtpHost">
-  <camunda:string>__SMTP_HOST__</camunda:string>
-</camunda:field>
-<camunda:field name="recipientEmail">
-  <camunda:string>__RECIPIENT_EMAIL__</camunda:string>
-</camunda:field>
+<operaton:field name="smtpHost">
+  <operaton:string>__SMTP_HOST__</operaton:string>
+</operaton:field>
+<operaton:field name="recipientEmail">
+  <operaton:string>__RECIPIENT_EMAIL__</operaton:string>
+</operaton:field>
 ```
 
 > Zmiana częstotliwości: podmień `R/PT10M` w `timeCycle` (np. `R/PT1H` = co godzinę).
@@ -109,7 +113,7 @@ Przykład (fragment BPMN):
 | `rejectDelegate` | `RejectDelegate` | Powiadomienie o odrzuceniu, ustawia `rejectionNotificationSent` |
 | `fetchExchangeRateDelegate` | `FetchExchangeRateDelegate` | Pobiera kurs z Frankfurter API; czyta `amount`/`fromCurrency`/`toCurrency`, ustawia `exchangeRate`, `convertedAmount`, `rateDate` |
 | `fetchWeatherDelegate` | `FetchWeatherDelegate` | Pobiera pogodę z Open-Meteo; czyta `latitude`/`longitude` (domyślnie Warszawa), ustawia `temperature`, `weatherFetchedAt` |
-| _(bez beana — `camunda:class`)_ | `SendEmailDelegate` | Wysyła maila przez SMTP; cała konfiguracja (SMTP + odbiorca) wstrzykiwana przez `camunda:field` z BPMN, ustawia `emailSent` |
+| _(bez beana — `operaton:class`)_ | `SendEmailDelegate` | Wysyła maila przez SMTP; cała konfiguracja (SMTP + odbiorca) wstrzykiwana przez `operaton:field` z BPMN, ustawia `emailSent` |
 
 ## REST API
 
@@ -198,7 +202,7 @@ src/main/java/com/devapo/operaton_demo
 │   ├── FetchExchangeRateDelegate.java
 │   ├── FetchWeatherDelegate.java
 │   └── SendEmailDelegate.java
-└── config/CamundaConfig.java
+└── config/OperatonConfig.java
 
 src/main/resources/
 ├── application.yml

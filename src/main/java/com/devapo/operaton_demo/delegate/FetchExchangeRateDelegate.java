@@ -9,9 +9,9 @@ import java.time.Duration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.operaton.bpm.engine.delegate.BpmnError;
+import org.operaton.bpm.engine.delegate.DelegateExecution;
+import org.operaton.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -80,7 +80,7 @@ public class FetchExchangeRateDelegate implements JavaDelegate {
             execution.setVariable("rateDate", rateDate);
 
             // Human-readable summary for the review task form (string type,
-            // so it renders safely in a generated Camunda task form).
+            // so it renders safely in a generated Operaton task form).
             String rateSummary = String.format("%s %s = %s %s (rate %s, as of %s)",
                     amount, from, convertedAmount, to, exchangeRate, rateDate);
             execution.setVariable("rateSummary", rateSummary);
