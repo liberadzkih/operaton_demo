@@ -1,7 +1,7 @@
 package com.devapo.operaton_demo.config;
 
-import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.operaton.bpm.engine.impl.cfg.AbstractProcessEnginePlugin;
+import org.operaton.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

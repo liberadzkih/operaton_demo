@@ -9,12 +9,11 @@ spring:
       ddl-auto: none
     open-in-view: false
 
-camunda:
-  bpm:
-    admin-user:
-      id: demo
-      password: demo
-    authorization:
-      enabled: true
-    database:
-      schema-update: true
+operaton.bpm:
+  admin-user:
+    id: demo
+    password: demo
+  authorization:
+    enabled: true
+  database:
+    schema-update: true
