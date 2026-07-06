@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
-                  id="Definitions_CurrencyExchange"
-                  targetNamespace="http://camunda.org/schema/1.0/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_CurrencyExchange" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
   <bpmn:process id="Operation-CurrencyExchange" name="Currency Exchange Request" isExecutable="true" camunda:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_Start_Fetch</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Task_FetchRate" name="Fetch Exchange Rate"
-                      camunda:delegateExpression="${fetchExchangeRateDelegate}">
+    <bpmn:serviceTask id="Task_FetchRate" name="Fetch Exchange Rate" camunda:delegateExpression="${fetchExchangeRateDelegate}">
       <bpmn:incoming>Flow_Start_Fetch</bpmn:incoming>
       <bpmn:outgoing>Flow_Fetch_Review</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:userTask id="Task_Review" name="Review Exchange" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="rateSummary" label="Exchange details" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="fromCurrency" label="From currency" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="toCurrency" label="To currency" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="rateDate" label="Rate date" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="approved" label="Approve exchange?" type="boolean" defaultValue="false">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_Fetch_Review</bpmn:incoming>
       <bpmn:outgoing>Flow_Review_Gateway</bpmn:outgoing>
     </bpmn:userTask>
@@ -24,13 +46,11 @@
       <bpmn:outgoing>Flow_Approved</bpmn:outgoing>
       <bpmn:outgoing>Flow_Rejected</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_Notify" name="Confirm Exchange"
-                      camunda:delegateExpression="${sendNotificationDelegate}">
+    <bpmn:serviceTask id="Task_Notify" name="Confirm Exchange" camunda:delegateExpression="${sendNotificationDelegate}">
       <bpmn:incoming>Flow_Approved</bpmn:incoming>
       <bpmn:outgoing>Flow_Notify_End</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Reject" name="Reject Exchange"
-                      camunda:delegateExpression="${rejectDelegate}">
+    <bpmn:serviceTask id="Task_Reject" name="Reject Exchange" camunda:delegateExpression="${rejectDelegate}">
       <bpmn:incoming>Flow_Rejected</bpmn:incoming>
       <bpmn:outgoing>Flow_Reject_End</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -44,12 +64,10 @@
     <bpmn:sequenceFlow id="Flow_Fetch_Review" sourceRef="Task_FetchRate" targetRef="Task_Review" />
     <bpmn:sequenceFlow id="Flow_Review_Gateway" sourceRef="Task_Review" targetRef="Gateway_Approved" />
     <bpmn:sequenceFlow id="Flow_Approved" name="approved" sourceRef="Gateway_Approved" targetRef="Task_Notify">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
-                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${approved == true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn:tFormalExpression">${approved == true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_Rejected" name="rejected" sourceRef="Gateway_Approved" targetRef="Task_Reject">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
-                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${approved == false}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn:tFormalExpression">${approved == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_Notify_End" sourceRef="Task_Notify" targetRef="EndEvent_Approved" />
     <bpmn:sequenceFlow id="Flow_Reject_End" sourceRef="Task_Reject" targetRef="EndEvent_Rejected" />
@@ -71,7 +89,7 @@
       <bpmndi:BPMNShape id="Gateway_Approved_di" bpmnElement="Gateway_Approved" isMarkerVisible="true">
         <dc:Bounds x="555" y="175" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="551" y="145" width="58" height="14" />
+          <dc:Bounds x="613" y="193" width="53" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_Notify_di" bpmnElement="Task_Notify">
@@ -109,7 +127,7 @@
         <di:waypoint x="580" y="120" />
         <di:waypoint x="660" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="586" y="135" width="48" height="14" />
+          <dc:Bounds x="587" y="103" width="46" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Rejected_di" bpmnElement="Flow_Rejected">

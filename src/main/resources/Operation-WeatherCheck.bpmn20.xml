@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
-                  id="Definitions_WeatherCheck"
-                  targetNamespace="http://camunda.org/schema/1.0/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_WeatherCheck" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
   <bpmn:process id="Operation-WeatherCheck" name="Weather Check Advisory" isExecutable="true" camunda:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_Start_Fetch</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather"
-                      camunda:delegateExpression="${fetchWeatherDelegate}">
+    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather" camunda:delegateExpression="${fetchWeatherDelegate}">
       <bpmn:incoming>Flow_Start_Fetch</bpmn:incoming>
       <bpmn:outgoing>Flow_Fetch_Gateway</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_Cold" name="Freezing? (&lt; 5&#176;C)">
+    <bpmn:exclusiveGateway id="Gateway_Cold" name="Freezing? (&#60; 5°C)">
       <bpmn:incoming>Flow_Fetch_Gateway</bpmn:incoming>
       <bpmn:outgoing>Flow_Cold</bpmn:outgoing>
       <bpmn:outgoing>Flow_Warm</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_FrostAlert" name="Send Frost Warning"
-                      camunda:delegateExpression="${sendNotificationDelegate}">
+    <bpmn:serviceTask id="Task_FrostAlert" name="Send Frost Warning" camunda:delegateExpression="${sendNotificationDelegate}">
       <bpmn:incoming>Flow_Cold</bpmn:incoming>
       <bpmn:outgoing>Flow_Cold_End</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Pleasant" name="Log Pleasant Weather"
-                      camunda:delegateExpression="${processDataDelegate}">
+    <bpmn:serviceTask id="Task_Pleasant" name="Log Pleasant Weather" camunda:delegateExpression="${processDataDelegate}">
       <bpmn:incoming>Flow_Warm</bpmn:incoming>
       <bpmn:outgoing>Flow_Warm_End</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -39,12 +30,10 @@
     <bpmn:sequenceFlow id="Flow_Start_Fetch" sourceRef="StartEvent_1" targetRef="Task_FetchWeather" />
     <bpmn:sequenceFlow id="Flow_Fetch_Gateway" sourceRef="Task_FetchWeather" targetRef="Gateway_Cold" />
     <bpmn:sequenceFlow id="Flow_Cold" name="cold" sourceRef="Gateway_Cold" targetRef="Task_FrostAlert">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
-                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${temperature &lt; 5}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn:tFormalExpression">${temperature &lt; 5}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_Warm" name="pleasant" sourceRef="Gateway_Cold" targetRef="Task_Pleasant">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"
-                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${temperature >= 5}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="bpmn:tFormalExpression">${temperature &gt;= 5}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_Cold_End" sourceRef="Task_FrostAlert" targetRef="EndEvent_Cold" />
     <bpmn:sequenceFlow id="Flow_Warm_End" sourceRef="Task_Pleasant" targetRef="EndEvent_Warm" />
@@ -63,7 +52,7 @@
       <bpmndi:BPMNShape id="Gateway_Cold_di" bpmnElement="Gateway_Cold" isMarkerVisible="true">
         <dc:Bounds x="415" y="175" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="400" y="145" width="82" height="27" />
+          <dc:Bounds x="476" y="193" width="88" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_FrostAlert_di" bpmnElement="Task_FrostAlert">
