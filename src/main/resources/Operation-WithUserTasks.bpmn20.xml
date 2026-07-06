@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_WithUserTasks" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
-  <bpmn:process id="Operation-WithUserTasks" name="Operation With User Tasks" isExecutable="true" camunda:historyTimeToLive="P30D">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:operaton="http://operaton.org/schema/1.0/bpmn" id="Definitions_WithUserTasks" targetNamespace="http://operaton.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
+  <bpmn:process id="Operation-WithUserTasks" name="Operation With User Tasks" isExecutable="true" operaton:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_Start_Validate</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Task_Validate" name="Validate Data" camunda:delegateExpression="${validateDataDelegate}">
+    <bpmn:serviceTask id="Task_Validate" name="Validate Data" operaton:delegateExpression="${validateDataDelegate}">
       <bpmn:incoming>Flow_Start_Validate</bpmn:incoming>
       <bpmn:outgoing>Flow_Validate_Approve</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Task_Approve" name="Approve Request" camunda:assignee="demo">
+    <bpmn:userTask id="Task_Approve" name="Approve Request" operaton:assignee="demo">
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="email" label="Requester e-mail" type="string">
-            <camunda:validation>
-              <camunda:constraint name="readonly" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="approved" label="Approve request?" type="boolean" defaultValue="false">
-            <camunda:validation>
-              <camunda:constraint name="required" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="comment" label="Comment" type="string" />
-        </camunda:formData>
+        <operaton:formData>
+          <operaton:formField id="email" label="Requester e-mail" type="string">
+            <operaton:validation>
+              <operaton:constraint name="readonly" />
+            </operaton:validation>
+          </operaton:formField>
+          <operaton:formField id="approved" label="Approve request?" type="boolean" defaultValue="false">
+            <operaton:validation>
+              <operaton:constraint name="required" />
+            </operaton:validation>
+          </operaton:formField>
+          <operaton:formField id="comment" label="Comment" type="string" />
+        </operaton:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_Validate_Approve</bpmn:incoming>
       <bpmn:outgoing>Flow_Approve_Gateway</bpmn:outgoing>
@@ -32,11 +32,11 @@
       <bpmn:outgoing>Flow_Approved</bpmn:outgoing>
       <bpmn:outgoing>Flow_Rejected</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_ProcessApproved" name="Process Approved" camunda:delegateExpression="${processDataDelegate}">
+    <bpmn:serviceTask id="Task_ProcessApproved" name="Process Approved" operaton:delegateExpression="${processDataDelegate}">
       <bpmn:incoming>Flow_Approved</bpmn:incoming>
       <bpmn:outgoing>Flow_Approved_End</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_SendRejection" name="Send Rejection" camunda:delegateExpression="${rejectDelegate}">
+    <bpmn:serviceTask id="Task_SendRejection" name="Send Rejection" operaton:delegateExpression="${rejectDelegate}">
       <bpmn:incoming>Flow_Rejected</bpmn:incoming>
       <bpmn:outgoing>Flow_Rejected_End</bpmn:outgoing>
     </bpmn:serviceTask>

@@ -7,18 +7,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Optional additional Camunda configuration, applied as a process engine plugin.
+ * Optional additional Operaton configuration, applied as a process engine plugin.
  * Tunes the job executor so that asynchronous work (e.g. the simulated
  * processing) is picked up quickly and enables engine metrics.
  */
 @Component
-public class CamundaConfig extends AbstractProcessEnginePlugin {
+public class OperatonConfig extends AbstractProcessEnginePlugin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CamundaConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperatonConfig.class);
 
     @Override
     public void preInit(ProcessEngineConfigurationImpl configuration) {
-        LOGGER.info("Applying custom Camunda process engine configuration");
+        LOGGER.info("Applying custom Operaton process engine configuration");
 
         configuration.setJobExecutorActivate(true);
         configuration.setMetricsEnabled(true);

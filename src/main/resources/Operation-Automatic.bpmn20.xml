@@ -3,25 +3,25 @@
                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  xmlns:operaton="http://operaton.org/schema/1.0/bpmn"
                   id="Definitions_Automatic"
-                  targetNamespace="http://camunda.org/schema/1.0/bpmn">
-  <bpmn:process id="Operation-Automatic" name="Operation Automatic" isExecutable="true" camunda:historyTimeToLive="P30D">
+                  targetNamespace="http://operaton.org/schema/1.0/bpmn">
+  <bpmn:process id="Operation-Automatic" name="Operation Automatic" isExecutable="true" operaton:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_Start_Validate</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="Task_Validate" name="Validate Data"
-                      camunda:delegateExpression="${validateDataDelegate}">
+                      operaton:delegateExpression="${validateDataDelegate}">
       <bpmn:incoming>Flow_Start_Validate</bpmn:incoming>
       <bpmn:outgoing>Flow_Validate_Process</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Task_Process" name="Process Data"
-                      camunda:delegateExpression="${processDataDelegate}">
+                      operaton:delegateExpression="${processDataDelegate}">
       <bpmn:incoming>Flow_Validate_Process</bpmn:incoming>
       <bpmn:outgoing>Flow_Process_Notify</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Task_Notify" name="Send Notification"
-                      camunda:delegateExpression="${sendNotificationDelegate}">
+                      operaton:delegateExpression="${sendNotificationDelegate}">
       <bpmn:incoming>Flow_Process_Notify</bpmn:incoming>
       <bpmn:outgoing>Flow_Notify_End</bpmn:outgoing>
     </bpmn:serviceTask>

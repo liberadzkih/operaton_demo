@@ -80,7 +80,7 @@ public class FetchExchangeRateDelegate implements JavaDelegate {
             execution.setVariable("rateDate", rateDate);
 
             // Human-readable summary for the review task form (string type,
-            // so it renders safely in a generated Camunda task form).
+            // so it renders safely in a generated Operaton task form).
             String rateSummary = String.format("%s %s = %s %s (rate %s, as of %s)",
                     amount, from, convertedAmount, to, exchangeRate, rateDate);
             execution.setVariable("rateSummary", rateSummary);

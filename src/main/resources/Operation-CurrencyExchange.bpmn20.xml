@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_CurrencyExchange" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
-  <bpmn:process id="Operation-CurrencyExchange" name="Currency Exchange Request" isExecutable="true" camunda:historyTimeToLive="P30D">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:operaton="http://operaton.org/schema/1.0/bpmn" id="Definitions_CurrencyExchange" targetNamespace="http://operaton.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
+  <bpmn:process id="Operation-CurrencyExchange" name="Currency Exchange Request" isExecutable="true" operaton:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_Start_Fetch</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Task_FetchRate" name="Fetch Exchange Rate" camunda:delegateExpression="${fetchExchangeRateDelegate}">
+    <bpmn:serviceTask id="Task_FetchRate" name="Fetch Exchange Rate" operaton:delegateExpression="${fetchExchangeRateDelegate}">
       <bpmn:incoming>Flow_Start_Fetch</bpmn:incoming>
       <bpmn:outgoing>Flow_Fetch_Review</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Task_Review" name="Review Exchange" camunda:assignee="demo">
+    <bpmn:userTask id="Task_Review" name="Review Exchange" operaton:assignee="demo">
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="rateSummary" label="Exchange details" type="string">
-            <camunda:validation>
-              <camunda:constraint name="readonly" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="fromCurrency" label="From currency" type="string">
-            <camunda:validation>
-              <camunda:constraint name="readonly" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="toCurrency" label="To currency" type="string">
-            <camunda:validation>
-              <camunda:constraint name="readonly" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="rateDate" label="Rate date" type="string">
-            <camunda:validation>
-              <camunda:constraint name="readonly" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="approved" label="Approve exchange?" type="boolean" defaultValue="false">
-            <camunda:validation>
-              <camunda:constraint name="required" />
-            </camunda:validation>
-          </camunda:formField>
-        </camunda:formData>
+        <operaton:formData>
+          <operaton:formField id="rateSummary" label="Exchange details" type="string">
+            <operaton:validation>
+              <operaton:constraint name="readonly" />
+            </operaton:validation>
+          </operaton:formField>
+          <operaton:formField id="fromCurrency" label="From currency" type="string">
+            <operaton:validation>
+              <operaton:constraint name="readonly" />
+            </operaton:validation>
+          </operaton:formField>
+          <operaton:formField id="toCurrency" label="To currency" type="string">
+            <operaton:validation>
+              <operaton:constraint name="readonly" />
+            </operaton:validation>
+          </operaton:formField>
+          <operaton:formField id="rateDate" label="Rate date" type="string">
+            <operaton:validation>
+              <operaton:constraint name="readonly" />
+            </operaton:validation>
+          </operaton:formField>
+          <operaton:formField id="approved" label="Approve exchange?" type="boolean" defaultValue="false">
+            <operaton:validation>
+              <operaton:constraint name="required" />
+            </operaton:validation>
+          </operaton:formField>
+        </operaton:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_Fetch_Review</bpmn:incoming>
       <bpmn:outgoing>Flow_Review_Gateway</bpmn:outgoing>
@@ -46,11 +46,11 @@
       <bpmn:outgoing>Flow_Approved</bpmn:outgoing>
       <bpmn:outgoing>Flow_Rejected</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_Notify" name="Confirm Exchange" camunda:delegateExpression="${sendNotificationDelegate}">
+    <bpmn:serviceTask id="Task_Notify" name="Confirm Exchange" operaton:delegateExpression="${sendNotificationDelegate}">
       <bpmn:incoming>Flow_Approved</bpmn:incoming>
       <bpmn:outgoing>Flow_Notify_End</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Reject" name="Reject Exchange" camunda:delegateExpression="${rejectDelegate}">
+    <bpmn:serviceTask id="Task_Reject" name="Reject Exchange" operaton:delegateExpression="${rejectDelegate}">
       <bpmn:incoming>Flow_Rejected</bpmn:incoming>
       <bpmn:outgoing>Flow_Reject_End</bpmn:outgoing>
     </bpmn:serviceTask>

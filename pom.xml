@@ -12,11 +12,11 @@
 	<artifactId>operaton_demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>operaton_demo</name>
-	<description>Camunda 7 Spring Boot demo</description>
+	<description>Operaton Spring Boot demo</description>
 
 	<properties>
 		<java.version>17</java.version>
-		<camunda.version>1.0.3</camunda.version>
+		<operaton.version>1.0.3</operaton.version>
 	</properties>
 
 	<dependencyManagement>
@@ -24,7 +24,7 @@
 			<dependency>
 				<groupId>org.operaton.bpm</groupId>
 				<artifactId>operaton-bom</artifactId>
-				<version>${camunda.version}</version>
+				<version>${operaton.version}</version>
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
@@ -32,7 +32,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Camunda BPM Spring Boot Starter (webapp includes the core engine + REST + web UI) -->
+		<!-- Operaton BPM Spring Boot Starter (webapp includes the core engine + REST + web UI) -->
 		<dependency>
 			<groupId>org.operaton.bpm.springboot</groupId>
 			<artifactId>operaton-bpm-spring-boot-starter-webapp</artifactId>

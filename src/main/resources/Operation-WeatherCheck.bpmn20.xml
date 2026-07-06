@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_WeatherCheck" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
-  <bpmn:process id="Operation-WeatherCheck" name="Weather Check Advisory" isExecutable="true" camunda:historyTimeToLive="P30D">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:operaton="http://operaton.org/schema/1.0/bpmn" id="Definitions_WeatherCheck" targetNamespace="http://operaton.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="5.38.1">
+  <bpmn:process id="Operation-WeatherCheck" name="Weather Check Advisory" isExecutable="true" operaton:historyTimeToLive="P30D">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:outgoing>Flow_Start_Fetch</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather" camunda:delegateExpression="${fetchWeatherDelegate}">
+    <bpmn:serviceTask id="Task_FetchWeather" name="Fetch Weather" operaton:delegateExpression="${fetchWeatherDelegate}">
       <bpmn:incoming>Flow_Start_Fetch</bpmn:incoming>
       <bpmn:outgoing>Flow_Fetch_Gateway</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -13,11 +13,11 @@
       <bpmn:outgoing>Flow_Cold</bpmn:outgoing>
       <bpmn:outgoing>Flow_Warm</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_FrostAlert" name="Send Frost Warning" camunda:delegateExpression="${sendNotificationDelegate}">
+    <bpmn:serviceTask id="Task_FrostAlert" name="Send Frost Warning" operaton:delegateExpression="${sendNotificationDelegate}">
       <bpmn:incoming>Flow_Cold</bpmn:incoming>
       <bpmn:outgoing>Flow_Cold_End</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_Pleasant" name="Log Pleasant Weather" camunda:delegateExpression="${processDataDelegate}">
+    <bpmn:serviceTask id="Task_Pleasant" name="Log Pleasant Weather" operaton:delegateExpression="${processDataDelegate}">
       <bpmn:incoming>Flow_Warm</bpmn:incoming>
       <bpmn:outgoing>Flow_Warm_End</bpmn:outgoing>
     </bpmn:serviceTask>
